@@ -1,3 +1,4 @@
+import Adafruit_BBIO.GPIO as GPIO
 import time
 import datetime
 from Adafruit_LED_Backpack import SevenSegment
@@ -54,12 +55,14 @@ def alarm_off(channel):
     return 0
 
 def set_alarm_hour(channel):
+    global alarm_hour
     if alarm_hour == 23:
         alarm_hour = 0
     else:
         alarm_hour = alarm_hour + 1
 
 def set_alarm_minute(channel):
+    global alarm_minute
     if alarm_minute == 59:
         alarm_minute = 0
     else:
@@ -85,9 +88,9 @@ def set_7seg(hour, minute):
     time.sleep(0.25)
     return 0
 
-GPIO.add_event_detect(buttonSnooze, GPIO.BOTH, callback=alarm_off) # RISING, FALLING$
-GPIO.add_event_detect(buttonHour, GPIO.BOTH, callback=set_alarm_hour) # RISING, FALLING$
-GPIO.add_event_detect(buttonMinute, GPIO.BOTH, callback=set_alarm_minute)
+GPIO.add_event_detect(buttonSnooze, GPIO.FALLING, callback=alarm_off, bouncetime=200) # RISING, FALLING$
+GPIO.add_event_detect(buttonHour, GPIO.FALLING, callback=set_alarm_hour, bouncetime=200) # RISING, FALLING$
+GPIO.add_event_detect(buttonMinute, GPIO.FALLING, callback=set_alarm_minute, bouncetime=200)
 
 
 update()
