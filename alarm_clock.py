@@ -10,6 +10,17 @@ alarm_minute = 0;
 segment = SevenSegment.SevenSegment(address=0x70, busnum=2)
 segment.begin()
 
+buttonSnooze= "P9_21"  #
+buttonSetAlarm="P9_22"
+buttonHour= "P9_23"  # 
+buttonMinute="P9_24"
+
+GPIO.setup(buttonSnooze, GPIO.IN)
+GPIO.setup(buttonSetAlarm, GPIO.IN)
+GPIO.setup(buttonHour, GPIO.IN)
+GPIO.setup(buttonMinute, GPIO.IN)
+
+
 def update():
     while(1):
         datetime_hour = datetime.datetime.now().hour
@@ -27,7 +38,10 @@ def update():
         if alarm == 1 and alarm_hour == datetime_hour and alarm_minute == minute:
             alarm_on()
 
-        set_7seg(hour, minute)
+        if GPIO.input("P9_22"):
+            set_7seg(alarm_hour, alarm_minute)
+        else:
+            set_7seg(hour, minute)
 
 
 
@@ -35,32 +49,22 @@ def alarm_on():
     # code for turning alarm sound on
     return 0
 
-def alarm_off():
+def alarm_off(channel):
     # code for turning alarm sound off
     return 0
 
-def set_alarm_hour():
+def set_alarm_hour(channel):
     if alarm_hour == 23:
         alarm_hour = 0
     else:
         alarm_hour = alarm_hour + 1
 
-def set_alarm_minute():
+def set_alarm_minute(channel):
     if alarm_minute == 59:
         alarm_minute = 0
     else:
         alarm_minute = alarm_minute + 1
 
-def show_alarm():
-    a_hour = alarm_hour
-    if alarm_hour < 12:
-        ampm = 0
-    else:
-        ampm = 1
-
-    if alarm_hour > 12:
-        a_hour = alarm_hour - 12
-    set_7seg(a_hour, alarm_minute)
 
 def set_7seg(hour, minute):
     segment.clear()
@@ -80,5 +84,10 @@ def set_7seg(hour, minute):
     # Wait a quarter second (less than 1 second to prevent colon blinking getting$
     time.sleep(0.25)
     return 0
+
+GPIO.add_event_detect(buttonSnooze, GPIO.BOTH, callback=alarm_off) # RISING, FALLING$
+GPIO.add_event_detect(buttonHour, GPIO.BOTH, callback=set_alarm_hour) # RISING, FALLING$
+GPIO.add_event_detect(buttonMinute, GPIO.BOTH, callback=set_alarm_minute)
+
 
 update()
