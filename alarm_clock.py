@@ -1,4 +1,5 @@
-
+import time
+import datetime
 from Adafruit_LED_Backpack import SevenSegment
 
 # Setup
@@ -6,10 +7,8 @@ ampm = 0;
 alarm = 0;
 alarm_hour = 0;
 alarm_minute = 0;
-segment = SevenSegment.SevenSegment(address=0x70)
+segment = SevenSegment.SevenSegment(address=0x70, busnum=2)
 segment.begin()
-
-update()
 
 def update():
     while(1):
@@ -29,6 +28,7 @@ def update():
             alarm_on()
 
         set_7seg(hour, minute)
+
 
 
 def alarm_on():
@@ -71,7 +71,7 @@ def set_7seg(hour, minute):
     segment.set_digit(2, int(minute / 10))   # Tens
     segment.set_digit(3, minute % 10)        # Ones
     # Toggle colon
-    segment.set_colon(second % 2)              # Toggle colon at 1Hz
+    segment.set_colon(datetime.datetime.now().second % 2)              # Toggle colon at 1Hz
 
     # Write the display buffer to the hardware.  This must be called to
     # update the actual display LEDs.
@@ -80,3 +80,5 @@ def set_7seg(hour, minute):
     # Wait a quarter second (less than 1 second to prevent colon blinking getting$
     time.sleep(0.25)
     return 0
+
+update()
