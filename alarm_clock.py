@@ -19,7 +19,7 @@ def update():
         
         if datetime_hour < 12:
             ampm = 0
-        else
+        else:
             ampm = 1
 
         if datetime_hour > 12:
@@ -42,20 +42,20 @@ def alarm_off():
 def set_alarm_hour():
     if alarm_hour == 23:
         alarm_hour = 0
-    else
+    else:
         alarm_hour = alarm_hour + 1
 
 def set_alarm_minute():
     if alarm_minute == 59:
         alarm_minute = 0
-    else
+    else:
         alarm_minute = alarm_minute + 1
 
 def show_alarm():
     a_hour = alarm_hour
     if alarm_hour < 12:
         ampm = 0
-    else
+    else:
         ampm = 1
 
     if alarm_hour > 12:
