@@ -1,6 +1,7 @@
 import Adafruit_BBIO.GPIO as GPIO
 import time
 import datetime
+import os
 from Adafruit_LED_Backpack import SevenSegment
 
 # Setup
@@ -47,11 +48,11 @@ def update():
 
 
 def alarm_on():
-    # code for turning alarm sound on
+    os.system('mpg123 phantom_words_ex1.mp3')
     return 0
 
 def alarm_off(channel):
-    # code for turning alarm sound off
+    os.system('q')
     return 0
 
 def set_alarm_hour(channel):
