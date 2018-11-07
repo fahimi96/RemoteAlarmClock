@@ -16,12 +16,21 @@ buttonSnooze= "P9_21"  #
 buttonSetAlarm="P9_22"
 buttonHour= "P9_23"  # 
 buttonMinute="P9_24"
+buttonAlarmToggle="P9_25"
+
+LEDalarmOnOff="P9_26"
+LEDampm="P9_27"
 
 GPIO.setup(buttonSnooze, GPIO.IN)
 GPIO.setup(buttonSetAlarm, GPIO.IN)
 GPIO.setup(buttonHour, GPIO.IN)
 GPIO.setup(buttonMinute, GPIO.IN)
+GPIO.setup(buttonAlarmToggle, GPIO.IN)
+GPIO.setup(LEDalarmOnOff, GPIO.OUT)
+GPIO.setup(LEDampm, GPIO.OUT)
 
+
+GPIO.output(LEDalarmOnOff, alarm)
 
 def update():
     global ampm
@@ -33,10 +42,6 @@ def update():
         minute = datetime.datetime.now().minute
         hour = datetime_hour
         alarm_hour_ampm = alarm_hour
-        if datetime_hour < 12:
-            ampm = 0
-        else:
-            ampm = 1
 
         if datetime_hour > 12:
             hour = datetime_hour - 12
@@ -44,8 +49,9 @@ def update():
             alarm_hour_ampm = alarm_hour - 12
 
         if alarm == 1 and alarm_hour == datetime_hour and alarm_minute == minute:
-            alarm = 0
             alarm_on()
+            alarm = 0
+            GPIO.output(LEDalarmOnOff, alarm)
 
         if GPIO.input("P9_22"):
             set_7seg(alarm_hour_ampm, alarm_minute)
@@ -59,6 +65,7 @@ def update():
                 ampm = 0
             else:
                 ampm = 1
+        GPIO.output(LEDampm, ampm)
 
 
 
@@ -69,6 +76,14 @@ def alarm_on():
 def alarm_off(channel):
     os.system('pidof mpg123 | xargs kill -9')
     return 0
+
+def alarm_toggle(channel):
+    global alarm
+    if alarm == 1:
+        alarm = 0
+    else:
+        alarm = 1
+    GPIO.output(LEDalarmOnOff, alarm)
 
 def set_alarm_hour(channel):
     global alarm_hour
@@ -107,6 +122,7 @@ def set_7seg(hour, minute):
 GPIO.add_event_detect(buttonSnooze, GPIO.FALLING, callback=alarm_off, bouncetime=200) # RISING, FALLING$
 GPIO.add_event_detect(buttonHour, GPIO.FALLING, callback=set_alarm_hour, bouncetime=200) # RISING, FALLING$
 GPIO.add_event_detect(buttonMinute, GPIO.FALLING, callback=set_alarm_minute, bouncetime=200)
+GPIO.add_event_detect(buttonAlarmToggle, GPIO.FALLING, callback=alarm_toggle, bouncetime=200)
 
 
 update()
