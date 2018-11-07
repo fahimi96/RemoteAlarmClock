@@ -5,10 +5,10 @@ import os
 from Adafruit_LED_Backpack import SevenSegment
 
 # Setup
-ampm = 0;
-alarm = 0;
-alarm_hour = 0;
-alarm_minute = 0;
+ampm = 0
+alarm = 1
+alarm_hour = 0
+alarm_minute = 0
 segment = SevenSegment.SevenSegment(address=0x70, busnum=2)
 segment.begin()
 
@@ -24,15 +24,15 @@ GPIO.setup(buttonMinute, GPIO.IN)
 
 
 def update():
-    global ampm = 0;
-    global alarm = 0;
-    global alarm_hour = 0;
-    global alarm_minute = 0;
+    global ampm
+    global alarm
+    global alarm_hour
+    global alarm_minute
     while(1):
         datetime_hour = datetime.datetime.now().hour
         minute = datetime.datetime.now().minute
         hour = datetime_hour
-        
+        alarm_hour_ampm = alarm_hour
         if datetime_hour < 12:
             ampm = 0
         else:
