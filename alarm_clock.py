@@ -49,10 +49,12 @@ def update():
 
 def alarm_on():
     os.system('mpg123 phantom_words_ex1.mp3')
+    alarm = 0
     return 0
 
 def alarm_off(channel):
-    os.system('q')
+    os.system('pidof mpg123 | xargs kill -9')
+    alarm = 0
     return 0
 
 def set_alarm_hour(channel):
