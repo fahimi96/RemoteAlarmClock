@@ -24,6 +24,10 @@ GPIO.setup(buttonMinute, GPIO.IN)
 
 
 def update():
+    global ampm = 0;
+    global alarm = 0;
+    global alarm_hour = 0;
+    global alarm_minute = 0;
     while(1):
         datetime_hour = datetime.datetime.now().hour
         minute = datetime.datetime.now().minute
@@ -36,25 +40,34 @@ def update():
 
         if datetime_hour > 12:
             hour = datetime_hour - 12
+        if alarm_hour > 12:
+            alarm_hour_ampm = alarm_hour - 12
 
         if alarm == 1 and alarm_hour == datetime_hour and alarm_minute == minute:
+            alarm = 0
             alarm_on()
 
         if GPIO.input("P9_22"):
-            set_7seg(alarm_hour, alarm_minute)
+            set_7seg(alarm_hour_ampm, alarm_minute)
+            if alarm_hour < 12:
+                ampm = 0
+            else:
+                ampm = 1
         else:
             set_7seg(hour, minute)
+            if datetime_hour < 12:
+                ampm = 0
+            else:
+                ampm = 1
 
 
 
 def alarm_on():
     os.system('mpg123 phantom_words_ex1.mp3')
-    alarm = 0
     return 0
 
 def alarm_off(channel):
     os.system('pidof mpg123 | xargs kill -9')
-    alarm = 0
     return 0
 
 def set_alarm_hour(channel):
