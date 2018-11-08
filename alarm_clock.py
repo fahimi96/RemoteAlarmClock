@@ -70,11 +70,11 @@ def update():
 
 
 def alarm_on():
-    os.system('mpg123 phantom_words_ex1.mp3')
+    os.system('cvlc --no-video https://www.youtube.com/watch?v=nPRHumwZfk4')
     return 0
 
 def alarm_off(channel):
-    os.system('pidof mpg123 | xargs kill -9')
+    os.system('^C')
     return 0
 
 def alarm_toggle(channel):
