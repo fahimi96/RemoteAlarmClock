@@ -6,7 +6,7 @@ from Adafruit_LED_Backpack import SevenSegment
 
 # Setup
 ampm = 0
-alarm = 1
+alarm = 0
 alarm_hour = 0
 alarm_minute = 0
 segment = SevenSegment.SevenSegment(address=0x70, busnum=2)
