@@ -1,3 +1,5 @@
+import signal
+import subprocess
 import Adafruit_BBIO.GPIO as GPIO
 import time
 import datetime
@@ -11,6 +13,7 @@ alarm_hour = 0
 alarm_minute = 0
 segment = SevenSegment.SevenSegment(address=0x70, busnum=2)
 segment.begin()
+proc = None
 
 buttonSnooze= "P9_21"  #
 buttonSetAlarm="P9_22"
@@ -70,11 +73,15 @@ def update():
 
 
 def alarm_on():
-    os.system('cvlc --no-video https://www.youtube.com/watch?v=nPRHumwZfk4')
+    #os.system('cvlc --no-video https://www.youtube.com/watch?v=nPRHumwZfk4')
+    global proc
+    proc = subprocess.Popen(['cvlc', '--no-video', 'https://www.youtube.com/watch?v=nPRHumwZfk4'])
     return 0
 
 def alarm_off(channel):
-    os.system('^C')
+   #os.system('kill -9 `pidof vlc`')
+    global proc
+    proc.send_signal(signal.SIGINT) 
     return 0
 
 def alarm_toggle(channel):
